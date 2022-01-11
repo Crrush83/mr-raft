@@ -1,0 +1,46 @@
+worker                          coordinator
+
+FirstHeartBeat(ip,reply)        record ip
+                                change task state [task | finished]
+                                change machine state
+                                append task to machine's task list
+
+AskForTask(ip,reply)           machine keep alive
+
+TellState(taskstateinfo,reply)       machine keep alive
+                                    taskstateinfo: ip
+                                                    taskname
+                                                    tasktype
+                                                    taskstate
+
+should keep alive a single type info？
+
+type Coordinator struct {
+	// Your definitions here.
+	// -1 died 0 idle 1 do_map 2 do_reduce 
+	machines map[string]int
+	//machine->input []string
+	hold_map map[string] []string
+	//machine->key []string
+	hold_reduce map[string] []string
+	map_tasks map[string] map_task
+	reduce_tasks map[string] reduce_task
+	map_finished bool
+	mapFinishNum int
+	numMutex sync.Mutex
+	reduce_finished bool
+	reduceFinishNum int
+	mapMutex sync.Mutex
+}
+type map_task struct{
+	//who are doing it
+	//state 0:undo 1:doing 2:finished
+	inputfile string
+	worker string
+	state int
+}
+type reduce_task struct{
+	key string
+	worker string
+	state int
+}
