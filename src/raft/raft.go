@@ -213,6 +213,7 @@ type AppendEntryArgs struct{
 
 type AppendEntryReply struct{
 	Term int
+	Want int
 	Success bool
 };
 type DetectLiveArgs struct{
@@ -315,6 +316,11 @@ func (rf *Raft) AppendEntry(args *AppendEntryArgs,reply *AppendEntryReply){
 		//更新过term
 		reply.Term = rf.atomicGetTerm()
 		reply.Success = false
+		//对待保活HB
+		if(args.Term == -1){
+			args.Term = 0;
+			return;
+		}
 		//以对方为准的前提？
 		//如果有一个离群的自动增加term : 满足其最大拥有entry还不如COMMIT
 	//	if(args.PrevLogIndex>=rf.entries[len(rf.entries)-1].Index&&
@@ -438,7 +444,6 @@ func (rf *Raft) AppendEntry(args *AppendEntryArgs,reply *AppendEntryReply){
 		//旧的leader怎么知道自己不是leader？
 		//那么这个旧的leader也会受到新的leader的LeaderID 
 		//在ticker循环中会发现自己并非leader 并转换到follower状态
-
 		
 }
 func (rf *Raft)atomicGetLastEntry()Entry{
@@ -481,12 +486,13 @@ func (rf *Raft) sendDetectLives(t int)int{
 	//invoke intime func
 		args := AppendEntryArgs{}
 		reply := AppendEntryReply{}
-		reply.Term = -1
-
-		lives := []bool{}
+		//这只是一个探活AppendEntry
+		//也可以看长度知道吧？
+		args.Term = -1
+		lives := []int{}
 		for index,_ := range rf.peers{
-			//in 50ms if return append
-			go rf.sendAppendEntryInTime(&lives,index,&args,&reply)
+			//lives只受是否完成调用影响
+			go rf.sendAppendEntryInTime(&lives,t,index,&args,&reply)
 		}
 	time.Sleep(time.Duration(t))
 	return len(lives)
@@ -548,49 +554,39 @@ func (rf *Raft) sendRequestVoteInTime(server int, args *RequestVoteArgs, reply *
 	return ok
 }
 //现在的逻辑是心跳携带entry 都要设置leader 那么args被填上leader的位置: tick循环 infi循环
-func (rf *Raft) sendAppendEntry(done chan bool,server int,args *AppendEntryArgs,reply *AppendEntryReply) bool {
+func (rf *Raft) sendAppendEntry(done chan int,server int,args *AppendEntryArgs,reply *AppendEntryReply){
 	//fmt.Println("leader send",args.PrevLogIndex," COMMIT",args.LeaderCommit)
 	//leader 为什么出错
-	args.LeaderId = rf.me
-	ok := rf.peers[server].Call("Raft.AppendEntry",args,reply)
-	rf.atomicSetTermIfNeed(reply.Term)
-	
-	done <- reply.Success
-	return ok
+	//args.LeaderId = rf.me
+	rf.peers[server].Call("Raft.AppendEntry",args,reply)
+	//rf.atomicSetTermIfNeed(reply.Term)
+	done <- server
 }
-func(rf *Raft) sendAppendEntryInTime(lives *[]bool,server int,args *AppendEntryArgs,reply *AppendEntryReply)bool{
+//只取timeout那个时间点的结果
+//暂时不想赋予lives的内容太多的意义 只取其长度？
+func(rf *Raft) sendAppendEntryInTime(lives *[]int,timeout int,server int,args *AppendEntryArgs,reply *AppendEntryReply){
 
-	//限时等待
-	
-	done := make(chan bool,1)
+	done := make(chan int,1)
 
-	ok := false
+	liveserver := -1
 	go rf.sendAppendEntry(done,server,args,reply)
-	time.Sleep(time.Duration(50000000))
+	time.Sleep(time.Duration(timeout))
 	select{
-	case ok = <-done://成功失败都是探测到live
-		*lives = append(*lives,ok)
+	case liveserver = <-done://成功失败都是探测到live
+		*lives = append(*lives,liveserver)
 			break
 	default:break
 	}
-	return ok //是否连通
 }
 func(rf *Raft) sendHeartBeatAndSleep50ms(args *AppendEntryArgs,reply *AppendEntryReply)bool{
 	//限时等待
 	//并行发送心跳
-	lives := []bool{}
+	lives := []int{}
 	for index,_ := range rf.peers{
-		go rf.sendAppendEntryInTime(&lives,index,args,reply)
+		go rf.sendAppendEntryInTime(&lives,50000000,index,args,reply)
 	}
 	time.Sleep(time.Duration(50000000))
-	flt := 0
-	for _,ans:= range lives{
-		if(ans){
-			flt++
-		}
-	}
-	fmt.Println("WTFFFFFFgrantLD",flt)
-	return flt > 1
+	return len(lives) > 1
 }
 
 
@@ -674,11 +670,13 @@ func (rf *Raft) infinitelySendToPeers(command interface{},index int,term int){
 	//在heartbeat里更新Live数
 	//if live < 1 be an old leader
 	//在heart beat 里
-	if(rf.atomicGetLeader()!=rf.atomicGetMe()){
-		fmt.Println("me",rf.me,"leader",rf.leader)
-		fmt.Println("TOO many disconnect")
-		return
-	}
+
+	//我真的见鬼了
+	// if(rf.atomicGetLeader()!=rf.atomicGetMe()){
+	// 	fmt.Println("me",rf.me,"leader",rf.leader)
+	// 	fmt.Println("TOO many disconnect")
+	// 	return
+	// }
 	
 	//成功过半 如何定义？
 		if(len(rf.peers) - len(resend) > (len(rf.peers)/2)){
@@ -762,47 +760,45 @@ func (rf *Raft) infinitelySendToPeers(command interface{},index int,term int){
 		if(index > rf.commitIndex){
 			rf.commitIndex = index
 			fmt.Println("FOUND NO FAIL SO UPDATE COMMIT")
-		//	fmt.Println("leader更新commit",rf.commitIndex)
+			fmt.Println("leader更新commit",rf.commitIndex)
 		}
 		
 	}
 
 }
-func(rf *Raft) AppendEntryIn50msRecordFail(fail *map[int]int,server int,args *AppendEntryArgs,reply *AppendEntryReply)bool{
+//使用map是因为将成功的从map中删除
+func(rf *Raft) AppendEntryIn50msRecordFail(fail *map[int]int,server int,args *AppendEntryArgs,reply *AppendEntryReply){
 
 	//限时等待
-	done := make(chan bool,1)
+	done := make(chan int,1)
 
-	ok := false
+	liveserver:= -1
 		//will send change next
 	//TOatomic
-	oldnext := rf.nextIndex[server]
 	rf.nextIndex[server] = args.PrevLogIndex + 1
 	
 	go rf.sendAppendEntry(done,server,args,reply)
 	time.Sleep(time.Duration(50000000))
 	select{
-	case ok = <-done:
+	case liveserver = <-done:
 			break
 	default:
 		break		
 	}
 	//下一层函数里处理了reply
-	if(ok){
+	//success:已经拥有这些咯
+	if(liveserver > 0 && reply.Success){
 		delete(*fail,server)
-		//一次失败 会导致一次重发 那么在nextIndex被修改前不要重新组装发送内容
-		//如果发送多次都失败了 那么nextIndex应该只递减一次
-		rf.nextIndex[server] = oldnext
-		//可能优化：按照follower回报的立刻重发
-		//fmt.Println("AppendEntry ",args.PrevLogIndex,"failed on",server)
-	}else{
-		//TOatomic
-		if(rf.matchIndex[server] < args.PrevLogIndex){
-			rf.matchIndex[server] = args.PrevLogIndex
+		//成功收到并说明WANT
+		if(rf.matchIndex[server] < reply.Want - 1){
+			rf.matchIndex[server] = reply.Want - 1
 		//	fmt.Println("match[",server,"]",rf.matchIndex[server])
 		}
+		rf.matchIndex[server] = reply.Want
+	}else{
+		//TOatomic
+		rf.nextIndex[server] = reply.Want
 	}
-	return ok //是否连通
 }
 
 func (rf *Raft) checkApply(initstate int){
@@ -924,15 +920,13 @@ func (rf *Raft) ticker() {
 			time.Sleep(time.Duration(150000000+randTime*1000000)) //150~300ms
 			//candidatetimeout + heartbeat时间如果 > 两个followersleep只差
 			//则明明已经有了leader却没有发现
-			
 				if rf.atomicGetLeader() >= 0 {
 				
 					//fmt.Println("term",rf.term,"F",rf.me,"know leader is",rf.leader)
 					select{
 					case <-rf.heartbeat:
 					break
-					//	fmt.Println("latest entry is ",rf.entries[len(rf.entries)-1].Index,"and recieve hb from leader ",rf.leader,"now apply",rf.lastApplied,"commit",rf.commitIndex)
-						
+					//	fmt.Println("latest entry is ",rf.entries[len(rf.entries)-1].Index,"and recieve hb from leader ",rf.leader,"now apply",rf.lastApplied,"commit",rf.commitIndex)	
 					default:
 					//	fmt.Println("but no hb come so F",rf.me,"turn to C")
 						rf.atomicSetLeaderSetState(-1,STATECANDIDATE)
@@ -972,21 +966,17 @@ func (rf *Raft) ticker() {
 					voteFor := rf.voteFor
 					rf.vote_lock.Unlock()
 					if(voteFor == rf.atomicGetMe()){
-						//寻求vote的时候不应该等待太久 如果一个send没有得到回应 应该视作 对方的拒绝
-						fmt.Println("C",rf.me," wil detect live...")
-						//最多50ms确定 在函数中sleep随机
+						//众数同意以lives为参考
+						//fmt.Println("C",rf.me," wil detect live...")
+						//等待多久后查看回应数量？HB超时：150~300ms
+						//10ms
 						live := rf.sendDetectLives(50000000)
 						//TOatomic
 						rf.live = live
 						//live 包括自己嘛？包括的
-						//live 满足什么要求可以组成一个群组？
-						
-					//	time.Sleep(time.Duration(50000000))
-
 						//if(live > 1 && (live) > len(rf.peers)/2 && rf.atomicGetGrantNum()+1 > (live)/2){
 						if(live > 1 && (live) > len(rf.peers)/2 && rf.atomicGetGrantNum()+1 > (live)/2){
 							//fmt.Println("so it become L")
-						//也可以只设置leader状态 不设置编号
 							rf.atomicSetLeaderSetState(rf.atomicGetMe(),STATELEADER)
 							continue
 						}else{
@@ -1024,6 +1014,9 @@ func (rf *Raft) ticker() {
 				//	fmt.Println(rf.me,"HB FAIL")
 				//	rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
 				//}
+				//为何不能继续做leader?
+				rf.atomicSetLeaderSetState(rf.me,STATELEADER)
+				continue
 
 }
 
