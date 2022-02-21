@@ -255,11 +255,47 @@ func (rf *Raft) atomicGetLeader() int{
 }
 func (rf *Raft)atomicClearVote(){
 	rf.vote_lock.Lock()
+	rf.grant_lock.Lock()
 	rf.voteFor = -1
+	rf.grantNum = 0
 	rf.vote_lock.Unlock()
+	rf.grant_lock.Unlock()
 }
+
 func (rf *Raft) atomicSetLeaderSetState(leader int,state int)bool{
 	ok := false
+	if(rf.state == state){
+		//follower->follower
+		//leader - 1 ->确定
+		if(state == STATEFOLLOWER && rf.leader < 0 && leader >=0 ){
+			rf.atomicClearVote()
+		}
+		//leader - 1 -> -1 不会发生 因为那样状态会变Candidate
+	}else if(rf.state == STATELEADER && state == STATEFOLLOWER){
+		rf.atomicClearVote()
+	}else if(rf.state == STATEFOLLOWER && state == STATECANDIDATE){
+		//只有投给自己成功了才自增term 
+		//不然有没有可能在投给他人成功（candidate状态）后再次自增term 导致无法接受HB
+		rf.atomicClearVote()
+	}else if(rf.state == STATECANDIDATE && state == STATEFOLLOWER){
+		//如果leader是-1则保留投票状态
+		//leader确定后则应该清空
+		//如果是投给自己没有得到回应应该清空状态
+		if(rf.voteFor == rf.me){
+			rf.atomicClearVote()
+		}
+	}else if(rf.state == STATECANDIDATE && state == STATELEADER){
+		rf.atomicClearVote()
+		//rf.clearStaleEntry()
+		//从保存点恢复 暂时为0
+		rf.matchIndex = make([]int,len(rf.peers))
+		rf.nextIndex = make([]int,len(rf.peers))
+		rf.matchIndex[rf.me] = rf.atomicGetLastEntry().Index
+		rf.nextIndex[rf.me] = rf.atomicGenerateIndex()
+	}else{
+		//不合法的状态转换
+		return false
+	}
 	rf.leader_lock.Lock()
 	rf.state_lock.Lock()
 	rf.leader = leader
@@ -292,25 +328,33 @@ func(rf *Raft)atomicGetTerm()int{
 }
 //too many disconnect 保证commit再次同步
 //LastLogIndex:可能在commit之前的last 要包含commit的那个而且是正确版本的
+//Leader投票变Follower
+//LEADER要学习更大的follower吗
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	reply.VoteGranted = false
 	//读取vote和改变vote要原子过程
 	//接到不合格的candidate发起的request 不会改变原来的状态
 	//commit并不是被所有知晓 所有里持有commit最大的那个
-	if(args.LastLogIndex >= rf.commitIndex  && args.LastLogTerm >= rf.atomicGetLastEntry().Term &&args.Term >= rf.term){
+	if(args.LastLogIndex >= rf.commitIndex  &&args.Term >= rf.term){
+	//if(args.LastLogIndex >= rf.commitIndex  && args.LastLogTerm >= rf.atomicGetLastEntry().Term &&args.Term >= rf.term){
+	//if(args.LastLogIndex >= rf.commitIndex  && args.Term >= rf.term){
 		if(rf.atomicVoteFor(args.CandidateId)){
 			reply.VoteGranted = true
-			if(rf.voteFor!=rf.me){
-			rf.atomicSetLeaderSetState(-1,STATEFOLLOWER) //因为不知道这次投票是否有效哇
-			//在FOLLOWER的timeout耗尽的时候再去看LEADER有没有定下来
-			//新的term什么时候被接受
+			//LEADER和FOLLOWER和投给自己的CANDIDATE、未投票的CANDIATE收到
 			rf.atomicSetTermIfNeed(args.Term)
-			//fmt.Println("C",rf.me,"vote for",args.CandidateId,"and turn to a follower")
+			if(rf.voteFor == rf.me){
+				//继续在CANDIDATE状态等待grantNum的判定
+			}else{
+				rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
+			}
 		}
-	}
-}
+			rf.term = args.Term
+			reply.Term = rf.atomicGetTerm()
+			return
+}	
 	reply.Term = rf.atomicGetTerm()
+	return
 }
 func (rf *Raft) clearStaleEntry(){
 	dele := len(rf.entries) - 1 //以args.Eentries的版本为基础 
@@ -324,13 +368,19 @@ func (rf *Raft) clearStaleEntry(){
 		}
 }
 func (rf *Raft) AppendEntry(args *AppendEntryArgs,reply *AppendEntryReply){
-	if(args.Term >= rf.term || args.LeaderCommit > rf.commitIndex){
-		//这其中又有什么omi?
+	if(args.Term >= rf.term && args.LeaderCommit >= rf.commitIndex){
 			//我认为你是leader
 			rf.atomicSetTermIfNeed(args.Term)
 			reply.Term = rf.atomicGetTerm() //如果对方term不一致的话说明不承认leader辣
+			//在HB收到最新的commit 不携带entry 也可以校验本地log是否过时
+			//commit跟上了 entry却没跟上 有意义吗？
+			//rf.commitIndex = args.LeaderCommit
+			//newcommit := args.commitIndex
+
+
 			//FOLLOWER记录来自LEADER的心跳
 			if rf.leader < 0 {
+				//在FOLLOWER状态收到HB 在StateChange里清空投票状态
 				rf.atomicSetLeaderSetState(args.LeaderId,STATEFOLLOWER)
 				//fmt.Println("in append entry ",rf.me,"set L TF",args.LeaderId)
 			}
@@ -343,24 +393,31 @@ func (rf *Raft) AppendEntry(args *AppendEntryArgs,reply *AppendEntryReply){
 				break //do not access 过时的心跳
 			}
 			//FOLLOWER更新commit
-			rf.commitIndex = args.LeaderCommit	
+			
 			//FOLLOWER查看携带的ENTRY 
 			if(len(args.Entries) == 0){
+				//再sendEntry里不要设置want哇因为不检查版本 检查完版本后的want才是正确的
 				reply.Success = true
-				reply.Want = rf.atomicGenerateIndex();
+				
+				if(args.LeaderCommit < rf.atomicGenerateIndex()){
+					rf.commitIndex = args.LeaderCommit
+				}
+				//reply.Want = rf.atomicGenerateIndex();
+				//HB只回复进度 不更新commit
 				return
 			}else{
 				//删除过时的本地entry 并判断是否能存下刚刚发来的 返回Want哪个 将成为next
 			}
 			}else{
-				//自己的
+				//LEADER收到自己的HB 同样返回接受和更新过的term
 				reply.Success = true
+				//reply.Term = rf.term 统一修改
 				reply.Want = rf.atomicGenerateIndex()
 				return
 			}
 		
 		
-		dele := len(rf.entries) - 1 //以args.Eentries的版本为基础 
+		
 		//如果和发来的版本矛盾（已经“新发来”的循环里）
 		//弄一个新发来的index - term map把
 		leaderEdition := make(map[int]int,len(args.Entries))
@@ -368,36 +425,40 @@ func (rf *Raft) AppendEntry(args *AppendEntryArgs,reply *AppendEntryReply){
 			leaderEdition[entry.Index] = entry.Term
 		}
 		//FOLLOWER删除旧版本entry 如果在发来的entry范围内而拥有低版本的entry则删掉
-		for dele > 0  {
-			if( rf.entries[dele].Index > args.Entries[len(args.Entries)-1].Index && 
-				rf.entries[dele].Term < args.Term ||
+		dele := 1 //以args.Eentries的版本为基础 
+		for dele < len(rf.entries) {
+			if( rf.entries[dele].Index > args.LeaderCommit || 
 				rf.entries[dele].Index >= args.Entries[0].Index && 
-				rf.entries[dele].Term != leaderEdition[rf.entries[dele].Index]){
-					rf.entries = rf.entries[0:len(rf.entries)-1]
+				rf.entries[dele].Term != leaderEdition[rf.entries[dele].Index] ){
+					rf.entries = rf.entries[0:dele]
+					break
 				}else{
-				 break
-				}
-					dele--
+				 dele++
+				}		
 			}
 		//当FOLLOWER的本地最高Index无法接续args.Entries[0] 则un success
 		//begin index 
 
-		highestEntry := rf.atomicGetLastEntry()
-		if(highestEntry.Index >= args.Entries[len(args.Entries) - 1].Index){
+		nextIndex := rf.atomicGenerateIndex()
+		if(args.Entries[len(args.Entries) - 1].Index < nextIndex){
 			reply.Success = true
 			reply.Want = rf.atomicGetLastEntry().Index + 1
+			if(args.LeaderCommit > rf.commitIndex && args.LeaderCommit <= rf.atomicGetLastEntry().Index){
+			rf.commitIndex = args.LeaderCommit}
 			return
-		}else if (highestEntry.Index + 1 < args.Entries[0].Index){
+		}else if (nextIndex < args.Entries[0].Index){
 				//wait old come
 				reply.Success = false
 				reply.Want = rf.atomicGetLastEntry().Index + 1
+				if(args.LeaderCommit > rf.commitIndex && args.LeaderCommit <= rf.atomicGetLastEntry().Index){
+					rf.commitIndex = args.LeaderCommit}
 				return
 		}else{
 		//找到highest + 1开始写入 一直到最后一个
 				begin := 0
-				for begin <= (len(args.Entries) - 1) {
+				for begin < len(args.Entries)  {
 				//	fmt.Println("begin:",begin)
-					if(args.Entries[begin].Index == highestEntry.Index + 1){
+					if(args.Entries[begin].Index == nextIndex){
 						break
 					}else{
 						begin ++
@@ -410,8 +471,13 @@ func (rf *Raft) AppendEntry(args *AppendEntryArgs,reply *AppendEntryReply){
 				//fmt.Println(rf.me,"writeok",args.Entries[len(args.Entries) - 1].Index)
 				reply.Want = rf.atomicGetLastEntry().Index + 1
 				reply.Success = true
+				if(args.LeaderCommit > rf.commitIndex && args.LeaderCommit <= rf.atomicGetLastEntry().Index){
+					rf.commitIndex = args.LeaderCommit}
 				return
 			}
+}else{
+	reply.Term = rf.term
+	reply.Success = false
 }
 }
 func (rf *Raft)atomicGetLastEntry()Entry{
@@ -466,15 +532,21 @@ func (rf *Raft) sendDetectLives(t int)int{
 	}
 	return len(live)
 }
-func (rf *Raft) sendRequestVote(done *[]int,server int, args *RequestVoteArgs, reply *RequestVoteReply)  {
+func (rf *Raft) sendRequestVote(live *[]int,server int, args *RequestVoteArgs, reply *RequestVoteReply)  {
 	args.Term = rf.atomicGetTerm()
 	args.CandidateId = rf.atomicGetMe()
 	reply.VoteGranted = false
-	args.LastLogIndex = rf.entries[len(rf.entries)-1].Index
-	args.LastLogTerm = rf.entries[len(rf.entries)-1].Term
+	// args.LastLogIndex = rf.entries[len(rf.entries)-1].Index
+	// args.LastLogTerm = rf.entries[len(rf.entries)-1].Term
+	 args.LastLogIndex = rf.entries[rf.commitIndex].Index
+	 args.LastLogTerm = rf.entries[rf.commitIndex].Term
 	
 	rf.peers[server].Call("Raft.RequestVote", args, reply)
-	*done = append(*done,server)
+	if(reply.Term > rf.term) {
+		rf.term = reply.Term
+		rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
+	}
+	*live = append(*live,server)
 }
 //针对一个发送 并在timeout时间后修改得到的投票数
 func (rf *Raft) sendRequestVoteInTimeout(timeout int,live *[]int,consume *int,server int, args *RequestVoteArgs, reply *RequestVoteReply) {
@@ -494,8 +566,13 @@ func (rf *Raft) sendAppendEntry(done chan int,server int,args *AppendEntryArgs,r
 	args.LeaderCommit = rf.commitIndex
 	args.LeaderId = rf.me
 	args.Term = rf.term
+	reply.Success = false
 	rf.peers[server].Call("Raft.AppendEntry",args,reply)
 	//rf.atomicSetTermIfNeed(reply.Term)
+	if(reply.Term > rf.term) {
+		rf.term = reply.Term
+		rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
+	}
 	done <- server
 }
 //只取timeout那个时间点的结果
@@ -516,27 +593,40 @@ func(rf *Raft) sendAppendEntryInTime(lives *[]int,timeout int,consume *int,serve
 	}
 	*consume--;
 }
+//关心谁不接受心跳吗？（不承认leader）
+//关心无法通信吗？（可能区域联通）
 func(rf *Raft) sendHeartBeatAndSleepTimeout(timeout int)bool{
-	//限时等待
-	//并行发送心跳 需要关心谁掉线了吗？
-	done := make([]chan int,len(rf.peers))
+	live := []int{}
+	consume := len(rf.peers)
+	args:= make([]AppendEntryArgs,len(rf.peers))
+	reply:=make([]AppendEntryReply,len(rf.peers))
 	for index,_ := range rf.peers{
-		args:= AppendEntryArgs{}
-		reply:=AppendEntryReply{}
-		go rf.sendAppendEntry(done[index],index,&args,&reply)
+		go rf.sendAppendEntryInTime(&live,timeout,&consume,index,&args[index],&reply[index])
 	}
 	time.Sleep(time.Duration(timeout))
-	die := 0
-	for _,ch := range done{
-		select{
-		case <-ch :
-			break
-		default :
-			die++
+	for consume > 0 {
+
+	}
+	agree := 0
+	for i,r := range reply{
+		if(r.Success && r.Term <= args[i].Term) {
+			//fmt.Println("follower term biger")
+			agree++
 		}
-	 }
-	 if(die + 1 == len(rf.peers)) {
-		 rf.state = STATEFOLLOWER
+	}
+	if(agree <= len(rf.peers)/2){
+		rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
+		fmt.Println(rf.me,"old leader")
+		//大部分的term是什么？
+		//可能自己增加的term太多 但是并未拥有最新的entry 没有做回FOLLOWER的离群者没有删掉旧的Entry
+		//term怎么说呢？
+	}
+
+	livenum := len(live)
+	// fmt.Println(rf.me,"find live",live)
+	 //在candidate探活状态转换里修改Term
+	 if(livenum - 1 <  (len(rf.peers)-1)/2) {
+		 rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
 	 }
 	return false
 }
@@ -602,73 +692,54 @@ func (rf *Raft)saveEntryToLeader(command interface{},index int) bool{
 	return save
 }
 func (rf *Raft)atomicGenerateIndex()int{
-	return rf.entries[len(rf.entries) - 1].Index + 1
+	ne := 0
+	rf.entry_lock.Lock()
+	ne = rf.entries[len(rf.entries) - 1].Index + 1
+	rf.entry_lock.Unlock()
+	return ne
 }
 func (rf *Raft) infinitelySendToPeersEveryTimeout(timeout int,command interface{},index int,term int){
 	//初始化
 	try := 1
 	resend := []int{}
 
-	for index,_ := range rf.peers {
-		resend = append(resend,index)
+	for i,_ := range rf.peers {
+		resend = append(resend,i)
 	}
+	last := rf.atomicGetLastEntry().Index
 	again:
 	fail := make(map[int]int)
 	for _,s:=range resend{
 		fail[s] = s
 	}
-	//如果联系不上部分server majority怎么算？还是算活着的部分
-	//在heartbeat里更新Live数
-	//if live < 1 be an old leader
-	//在heart beat 里
-
-	//我真的见鬼了
-	// if(rf.atomicGetLeader()!=rf.atomicGetMe()){
-	// 	fmt.Println("me",rf.me,"leader",rf.leader)
-	// 	fmt.Println("TOO many disconnect")
-	// 	return
-	// }
-	
 	//成功过半 如何定义？
 		if(len(rf.peers) - len(resend) > (len(rf.peers)/2)){
 	//	fmt.Println("majority record entry[",index,"]")
-		if(index > rf.commitIndex){
-			rf.commitIndex = index
+		if(last > rf.commitIndex){
+			rf.commitIndex = last
 			//fmt.Println("leader commit",rf.commitIndex)
 		}
 	}
 //	fmt.Println("send entry[",index,"] round ",try)
 	try++
 	consume := len(resend)
+	args := make([]AppendEntryArgs,len(rf.peers))
+	reply := make([]AppendEntryReply,len(rf.peers))
+	
 	for _,server := range resend{
 		if(rf.state!=STATELEADER) {return}
-		//要考虑到在AppendEntry里做哪些事情  Args要写全
-		args := AppendEntryArgs{}
-		args.LeaderCommit = rf.atomicGetCommit()
-		args.Term = rf.atomicGetTerm()
-		//leader自己设置自己是leader
-		args.LeaderId = rf.leader //leader莫名其妙会变成0我真的很害怕
-		//prevLogTerm是最新收到的
-		args.PrevLogIndex = index
-		args.PrevLogTerm = term
-		//TOatomic
 		i := rf.nextIndex[server]
 		//发给自己空包
-	//	fmt.Println("send entry",i,"~",index,"to server",server)
-		for i <= index{
-			//TOatomic
-			//记录发来的entry
-			//是client发来的
-			args.Entries = append(args.Entries,rf.entries[i])
+		for i <= last{
+			args[server].Entries = append(args[server].Entries,rf.entries[i])
 			i++
 		}
 		
-		reply := AppendEntryReply{}
-		reply.Term = -1
-		reply.Success = false
+		reply[server].Term = -1
+		reply[server].Success = false
 		//record fail and success !match
 		//实际上是20ms
-		go rf.AppendEntryInTimeoutRecordFail(&fail,timeout,&consume,server,&args,&reply)
+		go rf.AppendEntryInTimeoutRecordFail(&fail,timeout,&consume,server,&args[server],&reply[server])
 	}
 	time.Sleep(time.Duration(timeout))
 	for consume > 0{
@@ -684,11 +755,10 @@ func (rf *Raft) infinitelySendToPeersEveryTimeout(timeout int,command interface{
 	} else{
 	//	fmt.Println(index,"之前 all send")
 		/*之前忘了这里*/
-		if(index > rf.commitIndex){
-			rf.commitIndex = index
+		if(last > rf.commitIndex){
+			rf.commitIndex = last
 			//fmt.Println("FOUND NO FAIL SO UPDATE COMMIT")
 		}
-		
 	}
 
 }
@@ -714,23 +784,13 @@ func(rf *Raft) AppendEntryInTimeoutRecordFail(fail *map[int]int,timeout int,cons
 	}
 	//下一层函数里处理了reply
 	//success:已经拥有这些咯
-	if(reply.Term == args.Term && liveserver >= 0 && reply.Success){
+	if(liveserver >= 0 && reply.Success){
 		delete(*fail,server)
-		//成功收到并说明WANT
-		if(rf.matchIndex[server] < reply.Want - 1){
-			rf.matchIndex[server] = reply.Want - 1
-		//	fmt.Println("match[",server,"]",rf.matchIndex[server])
-		}
-		rf.matchIndex[server] = reply.Want
 	}else{
-		//TOatomic
-		//掉线了 或者有些无法收下
-		//分析fail的原因 是有丢包 还是不再是leader?
-		if(reply.Want == -1 || reply.Term > rf.term) {
-			rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)}
-		rf.nextIndex[server] = reply.Want
-		reply.Success = false
+		
 	}
+	rf.nextIndex[server] = reply.Want
+	rf.matchIndex[server] = reply.Want - 1
 }
 
 func (rf *Raft) checkApply(initstate int){
@@ -758,7 +818,7 @@ func (rf *Raft) apply(initstate int){
 	//	A := <-rf.applyCh
 		rf.lastApplied ++
 		applyindex++
-		fmt.Println("leader",rf.leader,rf.me,"apply","index:",apl.CommandIndex,"and nonw comm",rf.commitIndex,"term",rf.term)
+		//fmt.Println("leader",rf.leader,rf.me,"apply","index:",apl.CommandIndex,"and nonw comm",rf.commitIndex,"term",rf.term)
 	}
 		//在一个状态里有timeout的sleep辣
 }
@@ -837,10 +897,13 @@ func (rf *Raft) killed() bool {
 func (rf *Raft) ticker() {
 	rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
 	for rf.killed() == false {
+		//FOLLOWER状态 voteFor应该清除吗？
+		//FOLLOWER来自两个转化：①发现自己不是leader(可能再次投给别人 要在setState里clearVote & grantNum)
+		//②已经为其他候选投出 在Follower状态不应该投出
+		//③已经为自己投出但是没有得到足够回应 若因为live数量不足应该递减term 若只是没有得到足够投票不应该递减term
+			//此种都应该清除投票状态
 		if(rf.state == STATEFOLLOWER){
-			rf.apply(STATEFOLLOWER) //为什么follower不apply呢？
-		//	go rf.checkApply(STATEFOLLOWER)
-			rf.atomicClearVote()
+			rf.apply(STATEFOLLOWER)
 			rand.Seed(time.Now().UnixNano())
 			randTime := rand.Intn(150)
 			time.Sleep(time.Duration(150000000+randTime*1000000)) //150~300ms
@@ -863,53 +926,54 @@ func (rf *Raft) ticker() {
 					continue //重新进入循环
 				}
 		}else if rf.state == STATECANDIDATE{
-			
+			//和FOLLOWER互相转化 voteFor清空没？
 			//检查<0和改变应该原子地完成 否则可能会投出多个leader
 			if(rf.atomicVoteFor(rf.atomicGetMe())){
 				rf.term_lock.Lock()
 				rf.term++
 				rf.term_lock.Unlock()
-				//在发起投票之前应该把自己的票数清零 如果此时已经投给别人 是否应该在
-				//follower状态的循环里  但没有检查哇 就还是candidate 停留一段时间
-				rf.grant_lock.Lock()
-				rf.grantNum = 0
-				rf.grant_lock.Unlock()
-				//fmt.Println("term",rf.term,"C",rf.me,"vote for it self")
+				//fmt.Println("term",rf.term,"C",rf.me,"vote for it self get grant",rf.grantNum,rf.voteFor)
 				//同时计算活着的&得到的投票数
 				live := []int{}
 				consume := len(rf.peers)
+				randTime := rand.Intn(150000000)
 				for candi,_ := range rf.peers{
 				args := RequestVoteArgs{}
 				reply := RequestVoteReply{}
-				go rf.sendRequestVoteInTimeout(1000000,&live,&consume,candi,&args,&reply)
+				//只在sendRequestVote里修改grantNum
+				go rf.sendRequestVoteInTimeout(randTime,&live,&consume,candi,&args,&reply)
 			}
+				time.Sleep(time.Duration(randTime))
 				for consume > 0 {
 
 				}
 				livenum := len(live)
-				if(livenum > 1 && (livenum) > len(rf.peers)/2 && rf.atomicGetGrantNum() > (livenum)/2){
-					fmt.Println("so it become L")
+				//if(livenum > 1 && (livenum) > len(rf.peers)/2 && rf.atomicGetGrantNum() > (livenum)/2){
+				if((livenum) > len(rf.peers)/2 && rf.atomicGetGrantNum() > len(rf.peers)/2){
+					fmt.Println(rf.me,"get grantNUM",rf.grantNum,"so it become L")
 					rf.atomicSetLeaderSetState(rf.atomicGetMe(),STATELEADER)
-					rf.clearStaleEntry()
 					continue
 				}else{
-					//fmt.Println("vote not enough",rf.me,"it turn to F")
+					//这其中又有什么omi 孤立 or 少数
+					if((livenum) > len(rf.peers)/2){	
+					}else{
+						//rf.term--
+					}
+					//fmt.Println(rf.me,"lose vote")
 					rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
 					continue
 				}
 			}else{
+					//fmt.Println("have Vote For",rf.voteFor)
 					rf.atomicSetLeaderSetState(-1,STATEFOLLOWER)
-							continue
+					continue
 				}
 		}else if rf.state == STATELEADER{
-			//当选leader的人不要给别人发垃圾
-			rf.atomicClearVote()
-			
-			rf.leader = rf.me
+			//rf.leader = rf.me
 			rf.apply(STATELEADER)
 			//并返回term
 			//并没有真的直接修改状态 只发送一次心跳
-			rf.sendHeartBeatAndSleepTimeout(50000000)
+			rf.sendHeartBeatAndSleepTimeout(150000000)
 			continue
 }
 

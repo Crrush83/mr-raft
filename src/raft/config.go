@@ -523,7 +523,7 @@ func (cfg *config) one(cmd interface{}, expectedServers int, retry bool) int {
 					break
 				}
 			}else{
-				fmt.Println("rf == nil")
+			//	fmt.Println("rf == nil")
 			}
 		}
 

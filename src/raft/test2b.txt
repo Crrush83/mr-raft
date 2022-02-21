@@ -1,0 +1,2179 @@
+warning: only one CPU, which may conceal locking bugs
+Test (2B): basic agreement ...
+term 0 F 1 find leader dead leader: -1
+term 1 C 1 vote for it self get grant 0 1
+1 get grantNUM 3
+so it become L
+term 1 F 2 know leader is 1
+labgob warning: Decoding into a non-default variable/field Term may not work
+term 1 F 0 know leader is 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+term 1 F 2 know leader is 1
+1 find live [2 1 0]
+leader 1 1 apply index: 1 and nonw comm 1 term 1
+term 1 F 0 know leader is 1
+leader 1 0 apply index: 1 and nonw comm 1 term 1
+1 find live [2 1 0]
+1 find live [1 2 0]
+term 1 F 2 know leader is 1
+leader 1 2 apply index: 1 and nonw comm 1 term 1
+term 1 F 0 know leader is 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+term 1 F 2 know leader is 1
+term 1 F 0 know leader is 1
+1 find live [2 0 1]
+1 find live [2 1 0]
+leader 1 1 apply index: 2 and nonw comm 2 term 1
+term 1 F 0 know leader is 1
+leader 1 0 apply index: 2 and nonw comm 2 term 1
+term 1 F 2 know leader is 1
+leader 1 2 apply index: 2 and nonw comm 2 term 1
+1 find live [2 0 1]
+1 find live [2 0 1]
+1 find live [2 0 1]
+term 1 F 0 know leader is 1
+term 1 F 2 know leader is 1
+1 find live [2 0 1]
+1 find live [2 1 0]
+leader 1 1 apply index: 3 and nonw comm 3 term 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+term 1 F 0 know leader is 1
+leader 1 0 apply index: 3 and nonw comm 3 term 1
+1 find live [2 1 0]
+term 1 F 2 know leader is 1
+leader 1 2 apply index: 3 and nonw comm 3 term 1
+  ... Passed --   1.4  3   72   19797    3
+Test (2B): RPC byte count ...
+1 find live [2 1 0]
+term 1 F 0 know leader is 1
+term 1 F 2 know leader is 1
+but no hb come so F 2 turn to C
+term 0 F 0 find leader dead leader: -1
+term 1 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 2 F 1 find leader dead leader: -1
+term 3 C 1 vote for it self get grant 0 1
+0 get grantNUM 3
+so it become L
+0 find live [1 2 0]
+0 find live [2 1 0]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 2 know leader is 0
+term 3 F 1 know leader is 0
+0 find live [2 0 1]
+leader 0 0 apply index: 1 and nonw comm 1 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 1 and nonw comm 1 term 3
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 1 and nonw comm 1 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+0 find live [2 0 1]
+leader 0 0 apply index: 2 and nonw comm 2 term 3
+0 find live [2 0 1]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 2 and nonw comm 2 term 3
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 2 and nonw comm 2 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 0 1]
+term 3 F 1 know leader is 0
+term 3 F 2 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 3 and nonw comm 3 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 3 and nonw comm 3 term 3
+0 find live [0 2 1]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 3 and nonw comm 3 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+0 find live [1 2 0]
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 4 and nonw comm 4 term 3
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 4 and nonw comm 4 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 4 and nonw comm 4 term 3
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+0 find live [2 1 0]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 2 know leader is 0
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 5 and nonw comm 5 term 3
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 5 and nonw comm 5 term 3
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 5 and nonw comm 5 term 3
+0 find live [2 1 0]
+0 find live [2 0 1]
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+0 find live [2 0 1]
+leader 0 0 apply index: 6 and nonw comm 6 term 3
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 6 and nonw comm 6 term 3
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 6 and nonw comm 6 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+term 3 F 2 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 7 and nonw comm 7 term 3
+0 find live [2 0 1]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 7 and nonw comm 7 term 3
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 7 and nonw comm 7 term 3
+0 find live [2 0 1]
+0 find live [2 0 1]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 1 know leader is 0
+term 3 F 2 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 8 and nonw comm 8 term 3
+0 find live [2 0 1]
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 8 and nonw comm 8 term 3
+0 find live [1 2 0]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 8 and nonw comm 8 term 3
+0 find live [2 0 1]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 2 know leader is 0
+0 find live [1 2 0]
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 9 and nonw comm 9 term 3
+0 find live [2 0 1]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 9 and nonw comm 9 term 3
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 9 and nonw comm 9 term 3
+0 find live [2 0 1]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 2 know leader is 0
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+leader 0 0 apply index: 10 and nonw comm 10 term 3
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 10 and nonw comm 10 term 3
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 10 and nonw comm 10 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+0 find live [2 1 0]
+0 find live [2 0 1]
+leader 0 0 apply index: 11 and nonw comm 11 term 3
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 11 and nonw comm 11 term 3
+0 find live [2 1 0]
+0 find live [2 0 1]
+0 find live [2 0 1]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 11 and nonw comm 11 term 3
+  ... Passed --   5.4  3  291  180028   11
+Test (2B): agreement despite follower disconnection ...
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+term 3 F 2 know leader is 0
+but no hb come so F 2 turn to C
+term 0 F 2 find leader dead leader: -1
+term 1 C 2 vote for it self get grant 0 2
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+2 get grantNUM 3
+so it become L
+term 2 F 1 know leader is 2
+2 find live [2 0 1]
+2 find live [2 0 1]
+2 find live [2 0 1]
+term 2 F 0 know leader is 2
+2 find live [2 1 0]
+leader 2 2 apply index: 1 and nonw comm 1 term 2
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 1 and nonw comm 1 term 2
+2 find live [1 2 0]
+term 2 F 0 know leader is 2
+leader 2 0 apply index: 1 and nonw comm 1 term 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+term 2 F 0 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 0 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+2 find live [2 1]
+term 2 F 0 know leader is 2
+2 find live [2 1]
+2 find live [1 2]
+leader 2 2 apply index: 2 and nonw comm 2 term 2
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 2 and nonw comm 2 term 2
+2 find live [2 1]
+term 2 F 0 know leader is 2
+but no hb come so F 0 turn to C
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 1 know leader is 2
+2 find live [2 1]
+leader 2 2 apply index: 3 and nonw comm 3 term 2
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 3 and nonw comm 3 term 2
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+2 find live [1 2]
+term 2 F 1 know leader is 2
+2 find live [2 1]
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+term 2 F 1 know leader is 2
+2 find live [1 2]
+2 find live [2 1]
+term 2 F 1 know leader is 2
+2 find live [2 1]
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1]
+2 find live [1 2]
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+term 2 F 1 know leader is 2
+2 find live [2 1]
+2 find live [2 1]
+2 find live [2 1]
+2 find live [2 1]
+leader 2 2 apply index: 4 and nonw comm 4 term 2
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 4 and nonw comm 4 term 2
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 1 know leader is 2
+2 find live [2 1]
+leader 2 2 apply index: 5 and nonw comm 5 term 2
+2 find live [2 1]
+2 find live [2 1]
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+2 find live [2 1]
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 5 and nonw comm 5 term 2
+2 find live [2 1]
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 0 know leader is 2
+leader 2 0 apply index: 2 and nonw comm 6 term 2
+leader 2 0 apply index: 3 and nonw comm 6 term 2
+leader 2 0 apply index: 4 and nonw comm 6 term 2
+leader 2 0 apply index: 5 and nonw comm 6 term 2
+leader 2 0 apply index: 6 and nonw comm 6 term 2
+2 find live [1 2 0]
+leader 2 2 apply index: 6 and nonw comm 6 term 2
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 6 and nonw comm 6 term 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 0 know leader is 2
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+2 find live [2 0 1]
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+term 2 F 0 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+2 find live [2 0 1]
+term 2 F 0 know leader is 2
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+2 find live [2 0 1]
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+term 2 F 0 know leader is 2
+2 find live [2 1 0]
+2 find live [2 1 0]
+2 find live [2 1 0]
+term 2 F 1 know leader is 2
+2 find live [2 1 0]
+term 2 F 0 know leader is 2
+2 find live [2 0 1]
+2 find live [2 1 0]
+2 find live [2 1 0]
+leader 2 2 apply index: 7 and nonw comm 7 term 2
+term 2 F 1 know leader is 2
+leader 2 1 apply index: 7 and nonw comm 7 term 2
+term 2 F 0 know leader is 2
+leader 2 0 apply index: 7 and nonw comm 7 term 2
+2 find live [1 2 0]
+  ... Passed --   5.4  3  332   84148    7
+Test (2B): no agreement if too many followers disconnect ...
+2 find live [2 1 0]
+term 0 F 3 find leader dead leader: -1
+term 1 C 3 vote for it self get grant 0 3
+term 2 F 1 know leader is 2
+term 2 F 0 know leader is 2
+3 get grantNUM 5
+so it become L
+term 1 F 1 know leader is 3
+term 1 F 4 know leader is 3
+term 1 F 0 know leader is 3
+term 1 F 2 know leader is 3
+3 find live [4 3 0 1 2]
+3 find live [4 0 1 2 3]
+term 1 F 1 know leader is 3
+term 1 F 4 know leader is 3
+3 find live [4 3 0 1 2]
+term 1 F 2 know leader is 3
+3 find live [4 3 0 1 2]
+leader 3 3 apply index: 1 and nonw comm 1 term 1
+term 1 F 0 know leader is 3
+leader 3 0 apply index: 1 and nonw comm 1 term 1
+3 find live [4 3 0 1 2]
+term 1 F 4 know leader is 3
+leader 3 4 apply index: 1 and nonw comm 1 term 1
+3 find live [4 3 0 1 2]
+term 1 F 2 know leader is 3
+leader 3 2 apply index: 1 and nonw comm 1 term 1
+term 1 F 1 know leader is 3
+leader 3 1 apply index: 1 and nonw comm 1 term 1
+3 find live [4 0 1 2 3]
+3 find live [4 3 0 1 2]
+term 1 F 0 know leader is 3
+3 find live [4 3 0 1 2]
+term 1 F 1 know leader is 3
+term 1 F 4 know leader is 3
+3 find live [4 3 0 1 2]
+term 1 F 2 know leader is 3
+3 find live [4 3 0 1 2]
+term 1 F 0 know leader is 3
+3 find live [4 3 0 1 2]
+3 find live [4 3 0 1 2]
+term 1 F 1 know leader is 3
+term 1 F 4 know leader is 3
+term 1 F 2 know leader is 3
+3 find live [4 3 0 1 2]
+term 1 F 0 know leader is 3
+3 find live [4 0 1 2 3]
+3 find live [3 2]
+term 1 F 4 know leader is 3
+term 1 F 1 know leader is 3
+term 1 F 0 know leader is 3
+but no hb come so F 0 turn to C
+term 2 C 0 vote for it self get grant 0 0
+term 1 F 2 know leader is 3
+term 1 F 3 find leader dead leader: -1
+term 2 C 3 vote for it self get grant 0 3
+term 1 F 4 know leader is 3
+but no hb come so F 4 turn to C
+term 2 C 4 vote for it self get grant 0 4
+term 1 F 1 know leader is 3
+but no hb come so F 1 turn to C
+term 2 C 1 vote for it self get grant 0 1
+term 2 F 2 find leader dead leader: -1
+term 3 C 2 vote for it self get grant 0 2
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 1 F 4 find leader dead leader: -1
+term 2 C 4 vote for it self get grant 0 4
+term 3 F 3 find leader dead leader: -1
+term 4 C 3 vote for it self get grant 0 3
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 5 F 3 find leader dead leader: -1
+term 6 C 3 vote for it self get grant 0 3
+term 1 F 4 find leader dead leader: -1
+term 2 C 4 vote for it self get grant 0 4
+term 6 F 2 find leader dead leader: -1
+term 7 C 2 vote for it self get grant 0 2
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 1 F 4 find leader dead leader: -1
+term 2 C 4 vote for it self get grant 0 4
+term 6 F 2 find leader dead leader: -1
+term 7 C 2 vote for it self get grant 0 2
+term 7 F 3 find leader dead leader: -1
+term 8 C 3 vote for it self get grant 0 3
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 7 F 3 find leader dead leader: -1
+term 8 C 3 vote for it self get grant 0 3
+term 1 F 4 find leader dead leader: -1
+term 2 C 4 vote for it self get grant 0 4
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 8 F 2 find leader dead leader: -1
+term 9 C 2 vote for it self get grant 0 2
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 8 F 3 find leader dead leader: -1
+term 9 C 3 vote for it self get grant 0 3
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 1 F 4 find leader dead leader: -1
+term 2 C 4 vote for it self get grant 0 4
+term 9 F 2 find leader dead leader: -1
+term 10 C 2 vote for it self get grant 0 2
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 10 F 3 find leader dead leader: -1
+term 11 C 3 vote for it self get grant 0 3
+1 get grantNUM 3
+so it become L
+term 11 F 0 know leader is 1
+term 11 F 4 know leader is 1
+1 find live [4 3 0 1 2]
+term 11 F 2 know leader is 1
+1 find live [4 3 0 1 2]
+1 find live [4 3 0 1 2]
+term 11 F 0 know leader is 1
+term 11 F 3 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 4 know leader is 1
+1 find live [4 3 0 1 2]
+term 11 F 2 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 3 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 0 know leader is 1
+term 11 F 4 know leader is 1
+1 find live [3 0 4 1 2]
+leader 1 1 apply index: 2 and nonw comm 2 term 11
+1 find live [4 3 0 1 2]
+leader 1 1 apply index: 3 and nonw comm 3 term 11
+1 find live [4 3 0 1 2]
+term 11 F 2 know leader is 1
+leader 1 2 apply index: 2 and nonw comm 3 term 11
+term 11 F 0 know leader is 1
+leader 1 0 apply index: 2 and nonw comm 3 term 11
+1 find live [4 3 0 1 2]
+term 11 F 3 know leader is 1
+leader 1 3 apply index: 2 and nonw comm 3 term 11
+term 11 F 4 know leader is 1
+leader 1 4 apply index: 2 and nonw comm 3 term 11
+leader 1 4 apply index: 3 and nonw comm 3 term 11
+1 find live [4 3 0 1 2]
+term 11 F 0 know leader is 1
+1 find live [4 0 1 2 3]
+1 find live [4 3 0 1 2]
+term 11 F 2 know leader is 1
+term 11 F 3 know leader is 1
+1 find live [4 3 0 1 2]
+term 11 F 0 know leader is 1
+term 11 F 4 know leader is 1
+1 find live [3 0 4 1 2]
+term 11 F 2 know leader is 1
+1 find live [4 0 1 2 3]
+1 find live [4 0 1 2 3]
+1 find live [4 0 1 2 3]
+term 11 F 3 know leader is 1
+term 11 F 2 know leader is 1
+term 11 F 4 know leader is 1
+term 11 F 0 know leader is 1
+1 find live [4 0 1 2 3]
+1 find live [4 3 0 1 2]
+1 find live [4 0 1 2 3]
+term 11 F 4 know leader is 1
+term 11 F 2 know leader is 1
+term 11 F 3 know leader is 1
+1 find live [4 3 0 1 2]
+1 find live [4 3 0 1 2]
+term 11 F 0 know leader is 1
+term 11 F 4 know leader is 1
+1 find live [4 2 3 0 1]
+term 11 F 2 know leader is 1
+1 find live [4 3 0 1 2]
+term 11 F 3 know leader is 1
+1 find live [4 3 0 1 2]
+1 find live [4 3 0 1 2]
+term 11 F 4 know leader is 1
+term 11 F 0 know leader is 1
+term 11 F 2 know leader is 1
+1 find live [4 3 0 1 2]
+term 11 F 3 know leader is 1
+1 find live [4 0 1 2 3]
+1 find live [4 3 0 1 2]
+term 11 F 4 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 2 know leader is 1
+term 11 F 0 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 3 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 2 know leader is 1
+1 find live [4 0 1 2 3]
+term 11 F 4 know leader is 1
+term 11 F 0 know leader is 1
+1 find live [4 0 1 2 3]
+1 find live [4 3 0 1 2]
+term 11 F 3 know leader is 1
+leader 1 3 apply index: 3 and nonw comm 3 term 11
+1 find live [4 0 1 2 3]
+term 11 F 4 know leader is 1
+term 11 F 2 know leader is 1
+leader 1 2 apply index: 3 and nonw comm 3 term 11
+1 find live [4 0 1 2 3]
+1 find live [4 3 0 1 2]
+term 11 F 0 know leader is 1
+leader 1 0 apply index: 3 and nonw comm 3 term 11
+1 find live [4 3 0 1 2]
+leader 1 1 apply index: 4 and nonw comm 4 term 11
+term 11 F 3 know leader is 1
+leader 1 3 apply index: 4 and nonw comm 4 term 11
+1 find live [4 3 0 1 2]
+term 11 F 2 know leader is 1
+leader 1 2 apply index: 4 and nonw comm 4 term 11
+1 find live [4 3 0 1 2]
+term 11 F 4 know leader is 1
+leader 1 4 apply index: 4 and nonw comm 4 term 11
+1 find live [4 3 0 1 2]
+term 11 F 3 know leader is 1
+term 11 F 0 know leader is 1
+leader 1 0 apply index: 4 and nonw comm 4 term 11
+1 find live [3 4 0 1 2]
+  ... Passed --   6.1  5  505  112910    4
+Test (2B): concurrent Start()s ...
+term 11 F 2 know leader is 1
+1 find live [4 3 0 1 2]
+term 11 F 4 know leader is 1
+term 11 F 0 know leader is 1
+term 11 F 3 know leader is 1
+term 0 F 0 find leader dead leader: -1
+term 1 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 2 F 2 find leader dead leader: -1
+term 3 C 2 vote for it self get grant 0 2
+0 get grantNUM 3
+so it become L
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+0 find live [2 0 1]
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [1 2 0]
+leader 0 0 apply index: 1 and nonw comm 3 term 3
+leader 0 0 apply index: 2 and nonw comm 3 term 3
+leader 0 0 apply index: 3 and nonw comm 3 term 3
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 1 and nonw comm 3 term 3
+leader 0 2 apply index: 2 and nonw comm 3 term 3
+leader 0 2 apply index: 3 and nonw comm 3 term 3
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 1 and nonw comm 3 term 3
+leader 0 1 apply index: 2 and nonw comm 3 term 3
+leader 0 1 apply index: 3 and nonw comm 3 term 3
+0 find live [1 2 0]
+leader 0 0 apply index: 4 and nonw comm 6 term 3
+leader 0 0 apply index: 5 and nonw comm 6 term 3
+leader 0 0 apply index: 6 and nonw comm 6 term 3
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+leader 0 1 apply index: 4 and nonw comm 6 term 3
+leader 0 1 apply index: 5 and nonw comm 6 term 3
+leader 0 1 apply index: 6 and nonw comm 6 term 3
+0 find live [2 1 0]
+term 3 F 2 know leader is 0
+leader 0 2 apply index: 4 and nonw comm 6 term 3
+leader 0 2 apply index: 5 and nonw comm 6 term 3
+leader 0 2 apply index: 6 and nonw comm 6 term 3
+0 find live [2 1 0]
+0 find live [2 1 0]
+  ... Passed --   1.2  3   66   17485    6
+Test (2B): rejoin of partitioned leader ...
+0 find live [2 1 0]
+term 3 F 1 know leader is 0
+term 3 F 2 know leader is 0
+term 0 F 1 find leader dead leader: -1
+term 1 C 1 vote for it self get grant 0 1
+1 get grantNUM 3
+so it become L
+term 1 F 2 know leader is 1
+term 1 F 0 know leader is 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+leader 1 1 apply index: 1 and nonw comm 1 term 1
+term 1 F 2 know leader is 1
+leader 1 2 apply index: 1 and nonw comm 1 term 1
+1 find live [2 1 0]
+term 1 F 0 know leader is 1
+leader 1 0 apply index: 1 and nonw comm 1 term 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+term 1 F 2 know leader is 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+term 1 F 2 know leader is 1
+term 1 F 0 know leader is 1
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+1 find live [2 1 0]
+rf == nil
+term 1 F 2 know leader is 1
+rf == nil
+term 1 F 0 know leader is 1
+1 find live [2 0 1]
+rf == nil
+1 find live []
+rf == nil
+rf == nil
+term 1 F 2 know leader is 1
+but no hb come so F 2 turn to C
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+2 get grantNUM 2
+so it become L
+rf == nil
+term 2 F 0 know leader is 2
+2 find live [0 2]
+2 find live [2 0]
+2 find live [2 0]
+2 find live [2 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+2 find live [2 0]
+leader 2 2 apply index: 2 and nonw comm 2 term 2
+term 2 F 0 know leader is 2
+leader 2 0 apply index: 2 and nonw comm 2 term 2
+2 find live [2 0]
+2 find live [2 0]
+2 find live [2 0]
+term 2 F 0 know leader is 2
+2 find live [2 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+2 find live [2 0]
+2 find live [2 0]
+term 2 F 0 know leader is 2
+2 find live [2 0]
+2 find live [2 0]
+2 find live [2 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+term 2 F 0 know leader is 2
+2 find live [2 0]
+rf == nil
+2 find live []
+rf == nil
+rf == nil
+rf == nil
+term 2 F 0 know leader is 2
+but no hb come so F 0 turn to C
+term 3 C 0 vote for it self get grant 0 0
+term 3 F 1 find leader dead leader: -1
+term 4 C 1 vote for it self get grant 0 1
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+0 get grantNUM 2
+so it become L
+rf == nil
+0 find live [1 0]
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 4 F 1 find leader dead leader: -1
+term 5 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 5 F 1 find leader dead leader: -1
+term 6 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 2 F 0 find leader dead leader: -1
+term 3 C 0 vote for it self get grant 0 0
+term 6 F 1 find leader dead leader: -1
+term 7 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 3 F 0 find leader dead leader: -1
+term 4 C 0 vote for it self get grant 0 0
+term 7 F 1 find leader dead leader: -1
+term 8 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 4 F 0 find leader dead leader: -1
+term 5 C 0 vote for it self get grant 0 0
+term 8 F 1 find leader dead leader: -1
+term 9 C 1 vote for it self get grant 0 1
+term 5 F 0 find leader dead leader: -1
+term 6 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 9 F 1 find leader dead leader: -1
+term 10 C 1 vote for it self get grant 0 1
+term 6 F 0 find leader dead leader: -1
+term 7 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 10 F 1 find leader dead leader: -1
+term 11 C 1 vote for it self get grant 0 1
+rf == nil
+term 7 F 0 find leader dead leader: -1
+term 8 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+term 11 F 1 find leader dead leader: -1
+term 12 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 8 F 0 find leader dead leader: -1
+term 9 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 12 F 1 find leader dead leader: -1
+term 13 C 1 vote for it self get grant 0 1
+rf == nil
+term 9 F 0 find leader dead leader: -1
+term 10 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 13 F 1 find leader dead leader: -1
+term 14 C 1 vote for it self get grant 0 1
+rf == nil
+term 10 F 0 find leader dead leader: -1
+term 11 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 14 F 1 find leader dead leader: -1
+term 15 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 11 F 0 find leader dead leader: -1
+term 12 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+term 15 F 1 find leader dead leader: -1
+term 16 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 12 F 0 find leader dead leader: -1
+term 13 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 16 F 1 find leader dead leader: -1
+term 17 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+term 13 F 0 find leader dead leader: -1
+term 14 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 17 F 1 find leader dead leader: -1
+term 18 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 14 F 0 find leader dead leader: -1
+term 15 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 18 F 1 find leader dead leader: -1
+term 19 C 1 vote for it self get grant 0 1
+rf == nil
+term 15 F 0 find leader dead leader: -1
+term 16 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 19 F 1 find leader dead leader: -1
+term 20 C 1 vote for it self get grant 0 1
+term 16 F 0 find leader dead leader: -1
+term 17 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 17 F 0 find leader dead leader: -1
+term 18 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+term 20 F 1 find leader dead leader: -1
+term 21 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 18 F 0 find leader dead leader: -1
+term 19 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+term 21 F 1 find leader dead leader: -1
+term 22 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+term 19 F 0 find leader dead leader: -1
+term 20 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 22 F 1 find leader dead leader: -1
+term 23 C 1 vote for it self get grant 0 1
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+term 20 F 0 find leader dead leader: -1
+term 21 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 23 F 1 find leader dead leader: -1
+term 24 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+term 21 F 0 find leader dead leader: -1
+term 22 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+term 24 F 1 find leader dead leader: -1
+term 25 C 1 vote for it self get grant 0 1
+rf == nil
+term 22 F 0 find leader dead leader: -1
+term 23 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 25 F 1 find leader dead leader: -1
+term 26 C 1 vote for it self get grant 0 1
+rf == nil
+term 23 F 0 find leader dead leader: -1
+term 24 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 26 F 1 find leader dead leader: -1
+term 27 C 1 vote for it self get grant 0 1
+rf == nil
+term 24 F 0 find leader dead leader: -1
+term 25 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 27 F 1 find leader dead leader: -1
+term 28 C 1 vote for it self get grant 0 1
+rf == nil
+term 25 F 0 find leader dead leader: -1
+term 26 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 28 F 1 find leader dead leader: -1
+term 29 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+term 26 F 0 find leader dead leader: -1
+term 27 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 29 F 1 find leader dead leader: -1
+term 30 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+term 27 F 0 find leader dead leader: -1
+term 28 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 30 F 1 find leader dead leader: -1
+term 31 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 28 F 0 find leader dead leader: -1
+term 29 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 31 F 1 find leader dead leader: -1
+term 32 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+term 29 F 0 find leader dead leader: -1
+term 30 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 32 F 1 find leader dead leader: -1
+term 33 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 30 F 0 find leader dead leader: -1
+term 31 C 0 vote for it self get grant 0 0
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 33 F 1 find leader dead leader: -1
+term 34 C 1 vote for it self get grant 0 1
+rf == nil
+term 31 F 0 find leader dead leader: -1
+term 32 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 34 F 1 find leader dead leader: -1
+term 35 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 32 F 0 find leader dead leader: -1
+term 33 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 35 F 1 find leader dead leader: -1
+term 36 C 1 vote for it self get grant 0 1
+rf == nil
+term 33 F 0 find leader dead leader: -1
+term 34 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+rf == nil
+term 36 F 1 find leader dead leader: -1
+term 37 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 34 F 0 find leader dead leader: -1
+term 35 C 0 vote for it self get grant 0 0
+rf == nil
+term 1 F 2 find leader dead leader: -1
+term 2 C 2 vote for it self get grant 0 2
+--- FAIL: TestRejoin2B (12.33s)
+    config.go:560: one(104) failed to reach agreement
+Test (2B): leader backs up quickly over incorrect follower logs ...
+term 37 F 1 find leader dead leader: -1
+term 0 F 1 find leader dead leader: -1
+term 1 C 1 vote for it self get grant 0 1
+term 1 F 3 find leader dead leader: -1
+term 2 C 3 vote for it self get grant 0 3
+term 35 F 0 find leader dead leader: -1
+term 2 F 4 find leader dead leader: -1
+term 3 C 4 vote for it self get grant 0 4
+term 3 F 0 find leader dead leader: -1
+term 4 C 0 vote for it self get grant 0 0
+1 get grantNUM 5
+so it become L
+term 4 F 2 know leader is 1
+1 find live [3 0 4 1 2]
+1 find live [4 3 0 1 2]
+1 find live [4 3 0 1 2]
+term 4 F 3 know leader is 1
+term 4 F 4 know leader is 1
+1 find live [4 3 0 1 2]
+term 4 F 2 know leader is 1
+1 find live [4 3 0 1 2]
+leader 1 1 apply index: 1 and nonw comm 1 term 4
+term 4 F 0 know leader is 1
+leader 1 0 apply index: 1 and nonw comm 1 term 4
+1 find live [4 0 1 2 3]
+term 4 F 2 know leader is 1
+leader 1 2 apply index: 1 and nonw comm 1 term 4
+1 find live [4 0 1 2 3]
+term 4 F 4 know leader is 1
+leader 1 4 apply index: 1 and nonw comm 1 term 4
+1 find live [4 0 1 2 3]
+term 4 F 3 know leader is 1
+leader 1 3 apply index: 1 and nonw comm 1 term 4
+1 find live [4 3 0 1 2]
+term 4 F 2 know leader is 1
+1 find live [4 0 1 2 3]
+term 4 F 0 know leader is 1
+term 4 F 4 know leader is 1
+1 find live [4 0 1 2 3]
+1 find live [4 3 0 1 2]
+term 4 F 3 know leader is 1
+1 find live [4 0 1 2 3]
+term 4 F 2 know leader is 1
+term 4 F 0 know leader is 1
+1 find live [4 3 0 1 2]
+term 4 F 4 know leader is 1
+1 find live [4 3 0 1 2]
+term 4 F 2 know leader is 1
+1 find live [4 3 0 1 2]
+term 4 F 3 know leader is 1
+1 find live [4 0 1 2 3]
+term 4 F 4 know leader is 1
+1 find live [1 2]
+term 4 F 0 know leader is 1
+term 4 F 3 know leader is 1
+but no hb come so F 3 turn to C
+term 5 C 3 vote for it self get grant 0 3
+term 4 F 2 know leader is 1
+term 4 F 0 know leader is 1
+but no hb come so F 0 turn to C
+term 5 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 4 know leader is 1
+but no hb come so F 4 turn to C
+term 5 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 4 F 2 know leader is 1
+but no hb come so F 2 turn to C
+term 5 C 2 vote for it self get grant 0 2
+term 4 F 3 find leader dead leader: -1
+term 5 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 5 F 0 find leader dead leader: -1
+term 6 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 6 F 3 find leader dead leader: -1
+term 7 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 7 F 0 find leader dead leader: -1
+term 8 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+3 get grantNUM 3
+so it become L
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 8 F 4 know leader is 3
+3 find live [4 0]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 8 F 0 know leader is 3
+term 8 F 3 find leader dead leader: -1
+term 9 C 3 vote for it self get grant 0 3
+term 9 F 4 find leader dead leader: -1
+term 10 C 4 vote for it self get grant 0 4
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 get grantNUM 3
+so it become L
+leader 3 3 apply index: 2 and nonw comm 2 term 10
+leader -1 4 apply index: 2 and nonw comm 2 term 10
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 3 0]
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 2 and nonw comm 2 term 10
+rf == nil
+rf == nil
+3 find live [3 0 4]
+3 find live [4 3 0]
+3 find live [4 3 0]
+term 10 F 4 know leader is 3
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 0 3]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 10 F 0 know leader is 3
+3 find live [3 0 4]
+leader 3 3 apply index: 3 and nonw comm 3 term 10
+3 find live [4 3 0]
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 3 and nonw comm 3 term 10
+3 find live [4 3 0 1]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 3 0]
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 3 and nonw comm 3 term 10
+rf == nil
+rf == nil
+3 find live [4 3 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 3 0]
+term 10 F 4 know leader is 3
+3 find live [4 3 0]
+3 find live [4 3 0]
+term 10 F 0 know leader is 3
+3 find live [4 3 0]
+leader 3 3 apply index: 4 and nonw comm 4 term 10
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 4 and nonw comm 4 term 10
+3 find live [4 0 3]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 3 0]
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 4 and nonw comm 4 term 10
+rf == nil
+rf == nil
+3 find live [4 3 0]
+3 find live [4 0 3]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 10 F 4 know leader is 3
+3 find live [4 3 0]
+term 10 F 0 know leader is 3
+3 find live [4 3 0]
+leader 3 3 apply index: 5 and nonw comm 5 term 10
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 3 0]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 5 and nonw comm 5 term 10
+3 find live [4 0 3]
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 5 and nonw comm 5 term 10
+3 find live [3 0 4]
+rf == nil
+rf == nil
+3 find live [3 0 4]
+term 10 F 4 know leader is 3
+3 find live [4 3 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 0 3]
+term 10 F 0 know leader is 3
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 3 0]
+leader 3 3 apply index: 6 and nonw comm 6 term 10
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 6 and nonw comm 6 term 10
+3 find live [4 3 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 0 3]
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 6 and nonw comm 6 term 10
+3 find live [3 0 4]
+rf == nil
+rf == nil
+term 10 F 4 know leader is 3
+3 find live [4 3 0]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 0 3]
+3 find live [4 3 0]
+term 10 F 0 know leader is 3
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 10 F 4 know leader is 3
+3 find live [3 0 4]
+leader 3 3 apply index: 7 and nonw comm 7 term 10
+3 find live [4 3 0]
+3 find live [4 3 0]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 3 0]
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 7 and nonw comm 7 term 10
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 7 and nonw comm 7 term 10
+3 find live [3 0 4]
+rf == nil
+rf == nil
+3 find live [4 3 0]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 0 3]
+term 10 F 4 know leader is 3
+term 10 F 0 know leader is 3
+3 find live [3 0 4]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 0 3]
+leader 3 3 apply index: 8 and nonw comm 8 term 10
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 8 and nonw comm 8 term 10
+3 find live [4 0 3]
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 8 and nonw comm 8 term 10
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 10 F 0 know leader is 3
+3 find live [4 3 0]
+3 find live [4 3 0]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 10 F 4 know leader is 3
+3 find live [4 3 0]
+3 find live [3 0 4]
+leader 3 3 apply index: 9 and nonw comm 9 term 10
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 9 and nonw comm 9 term 10
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [4 0 3]
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [4 3 0]
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 9 and nonw comm 9 term 10
+rf == nil
+rf == nil
+3 find live [4 0 3]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 10 F 0 know leader is 3
+3 find live [3 0 4]
+3 find live [4 3 0]
+term 10 F 4 know leader is 3
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+3 find live [3 0 4]
+leader 3 3 apply index: 10 and nonw comm 10 term 10
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 10 F 0 know leader is 3
+leader 3 0 apply index: 10 and nonw comm 10 term 10
+3 find live [3 0 4]
+3 find live [4 0 3]
+term 10 F 4 know leader is 3
+leader 3 4 apply index: 10 and nonw comm 10 term 10
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+3 find live [4 0 3]
+term 10 F 0 know leader is 3
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+3 find live [3]
+term 10 F 4 know leader is 3
+term 10 F 0 know leader is 3
+but no hb come so F 0 turn to C
+term 11 C 0 vote for it self get grant 0 0
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 11 F 3 find leader dead leader: -1
+term 12 C 3 vote for it self get grant 0 3
+0 get grantNUM 3
+so it become L
+term 12 F 4 know leader is 0
+leader -1 3 apply index: 11 and nonw comm 11 term 12
+0 find live [1 4 0 3]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 1 F 0 find leader dead leader: -1
+term 2 C 0 vote for it self get grant 0 0
+term 12 F 3 find leader dead leader: -1
+term 13 C 3 vote for it self get grant 0 3
+term 13 F 4 find leader dead leader: -1
+term 14 C 4 vote for it self get grant 0 4
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 14 F 0 find leader dead leader: -1
+term 15 C 0 vote for it self get grant 0 0
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 14 F 3 find leader dead leader: -1
+term 15 C 3 vote for it self get grant 0 3
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 15 F 4 find leader dead leader: -1
+term 16 C 4 vote for it self get grant 0 4
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 16 F 0 find leader dead leader: -1
+term 17 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 17 F 4 find leader dead leader: -1
+term 18 C 4 vote for it self get grant 0 4
+term 18 F 3 find leader dead leader: -1
+term 19 C 3 vote for it self get grant 0 3
+4 get grantNUM 3
+so it become L
+4 find live [4 0 3]
+term 19 F 0 know leader is 4
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 19 F 3 find leader dead leader: -1
+term 20 C 3 vote for it self get grant 0 3
+term 20 F 4 find leader dead leader: -1
+term 21 C 4 vote for it self get grant 0 4
+term 21 F 0 find leader dead leader: -1
+term 22 C 0 vote for it self get grant 0 0
+3 get grantNUM 3
+so it become L
+3 find live [3 0 4]
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 22 F 0 find leader dead leader: -1
+term 23 C 0 vote for it self get grant 0 0
+term 1 F 3 find leader dead leader: -1
+term 2 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 23 F 4 find leader dead leader: -1
+term 24 C 4 vote for it self get grant 0 4
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 24 F 0 find leader dead leader: -1
+term 25 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 25 F 4 find leader dead leader: -1
+term 26 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 2 F 3 find leader dead leader: -1
+term 3 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 26 F 0 find leader dead leader: -1
+term 27 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 27 F 4 find leader dead leader: -1
+term 28 C 4 vote for it self get grant 0 4
+term 3 F 3 find leader dead leader: -1
+term 4 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 28 F 0 find leader dead leader: -1
+term 29 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 29 F 4 find leader dead leader: -1
+term 30 C 4 vote for it self get grant 0 4
+term 4 F 3 find leader dead leader: -1
+term 5 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 30 F 4 find leader dead leader: -1
+term 31 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 5 F 3 find leader dead leader: -1
+term 6 C 3 vote for it self get grant 0 3
+term 31 F 0 find leader dead leader: -1
+term 32 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 32 F 0 find leader dead leader: -1
+term 33 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 6 F 3 find leader dead leader: -1
+term 7 C 3 vote for it self get grant 0 3
+term 33 F 4 find leader dead leader: -1
+term 34 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 34 F 0 find leader dead leader: -1
+term 35 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 35 F 4 find leader dead leader: -1
+term 36 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 7 F 3 find leader dead leader: -1
+term 8 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 36 F 0 find leader dead leader: -1
+term 37 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 37 F 4 find leader dead leader: -1
+term 38 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 8 F 3 find leader dead leader: -1
+term 9 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 38 F 4 find leader dead leader: -1
+term 39 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 39 F 0 find leader dead leader: -1
+term 40 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 9 F 3 find leader dead leader: -1
+term 10 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 40 F 4 find leader dead leader: -1
+term 41 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 41 F 0 find leader dead leader: -1
+term 42 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 10 F 3 find leader dead leader: -1
+term 11 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 42 F 4 find leader dead leader: -1
+term 43 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 11 F 3 find leader dead leader: -1
+term 12 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 43 F 0 find leader dead leader: -1
+term 44 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 44 F 4 find leader dead leader: -1
+term 45 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 12 F 3 find leader dead leader: -1
+term 13 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 45 F 0 find leader dead leader: -1
+term 46 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 46 F 4 find leader dead leader: -1
+term 47 C 4 vote for it self get grant 0 4
+term 13 F 3 find leader dead leader: -1
+term 14 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 47 F 0 find leader dead leader: -1
+term 48 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 48 F 4 find leader dead leader: -1
+term 49 C 4 vote for it self get grant 0 4
+term 14 F 3 find leader dead leader: -1
+term 15 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 49 F 0 find leader dead leader: -1
+term 50 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 50 F 4 find leader dead leader: -1
+term 51 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 15 F 3 find leader dead leader: -1
+term 16 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 51 F 0 find leader dead leader: -1
+term 52 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 52 F 4 find leader dead leader: -1
+term 53 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 16 F 3 find leader dead leader: -1
+term 17 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 53 F 4 find leader dead leader: -1
+term 54 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 54 F 0 find leader dead leader: -1
+term 55 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 17 F 3 find leader dead leader: -1
+term 18 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 55 F 4 find leader dead leader: -1
+term 56 C 4 vote for it self get grant 0 4
+term 56 F 0 find leader dead leader: -1
+term 57 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 18 F 3 find leader dead leader: -1
+term 19 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 57 F 0 find leader dead leader: -1
+term 58 C 0 vote for it self get grant 0 0
+term 58 F 4 find leader dead leader: -1
+term 59 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 19 F 3 find leader dead leader: -1
+term 20 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 59 F 0 find leader dead leader: -1
+term 60 C 0 vote for it self get grant 0 0
+term 60 F 4 find leader dead leader: -1
+term 61 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 20 F 3 find leader dead leader: -1
+term 21 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 61 F 4 find leader dead leader: -1
+term 62 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 62 F 0 find leader dead leader: -1
+term 63 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 21 F 3 find leader dead leader: -1
+term 22 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 63 F 4 find leader dead leader: -1
+term 64 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 64 F 0 find leader dead leader: -1
+term 65 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 22 F 3 find leader dead leader: -1
+term 23 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 65 F 4 find leader dead leader: -1
+term 66 C 4 vote for it self get grant 0 4
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 23 F 3 find leader dead leader: -1
+term 24 C 3 vote for it self get grant 0 3
+term 66 F 0 find leader dead leader: -1
+term 67 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 67 F 4 find leader dead leader: -1
+term 68 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 68 F 0 find leader dead leader: -1
+term 69 C 0 vote for it self get grant 0 0
+term 24 F 3 find leader dead leader: -1
+term 25 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 69 F 4 find leader dead leader: -1
+term 70 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 70 F 0 find leader dead leader: -1
+term 71 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 25 F 3 find leader dead leader: -1
+term 26 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 71 F 4 find leader dead leader: -1
+term 72 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 72 F 0 find leader dead leader: -1
+term 73 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+term 26 F 3 find leader dead leader: -1
+term 27 C 3 vote for it self get grant 0 3
+term 73 F 4 find leader dead leader: -1
+term 74 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+rf == nil
+rf == nil
+term 74 F 4 find leader dead leader: -1
+term 75 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 27 F 3 find leader dead leader: -1
+term 28 C 3 vote for it self get grant 0 3
+term 75 F 0 find leader dead leader: -1
+term 76 C 0 vote for it self get grant 0 0
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+term 28 F 3 find leader dead leader: -1
+term 29 C 3 vote for it self get grant 0 3
+rf == nil
+rf == nil
+term 76 F 4 find leader dead leader: -1
+term 77 C 4 vote for it self get grant 0 4
+rf == nil
+rf == nil
+term 77 F 0 find leader dead leader: -1
+term 78 C 0 vote for it self get grant 0 0
+term 4 F 2 find leader dead leader: -1
+term 5 C 2 vote for it self get grant 0 2
+rf == nil
+rf == nil
+rf == nil
+rf == nil
+--- FAIL: TestBackup2B (16.86s)
+    config.go:560: one(623398344746501776) failed to reach agreement
+Test (2B): RPC counts aren't too high ...
+term 1 F 1 find leader dead leader: -1
+term 78 F 0 find leader dead leader: -1
+term 78 F 4 find leader dead leader: -1
+term 29 F 3 find leader dead leader: -1
+term 4 F 2 find leader dead leader: -1
+term 0 F 0 find leader dead leader: -1
+term 1 C 0 vote for it self get grant 0 0
+term 1 F 1 find leader dead leader: -1
+term 2 C 1 vote for it self get grant 0 1
+0 get grantNUM 3
+so it become L
+term 2 F 2 know leader is 0
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [1 2 0]
+0 find live [2 1 0]
+term 2 F 2 know leader is 0
+term 2 F 1 know leader is 0
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 2 F 2 know leader is 0
+term 2 F 1 know leader is 0
+0 find live [2 0 1]
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 2 F 2 know leader is 0
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 2 F 1 know leader is 0
+0 find live [2 0 1]
+0 find live [2 1 0]
+term 2 F 2 know leader is 0
+0 find live [2 1 0]
+term 2 F 1 know leader is 0
+term 2 F 2 know leader is 0
+0 find live [1 0 2]
+leader 0 0 apply index: 1 and nonw comm 12 term 2
+leader 0 0 apply index: 2 and nonw comm 12 term 2
+leader 0 0 apply index: 3 and nonw comm 12 term 2
+leader 0 0 apply index: 4 and nonw comm 12 term 2
+leader 0 0 apply index: 5 and nonw comm 12 term 2
+leader 0 0 apply index: 6 and nonw comm 12 term 2
+leader 0 0 apply index: 7 and nonw comm 12 term 2
+leader 0 0 apply index: 8 and nonw comm 12 term 2
+leader 0 0 apply index: 9 and nonw comm 12 term 2
+leader 0 0 apply index: 10 and nonw comm 12 term 2
+leader 0 0 apply index: 11 and nonw comm 12 term 2
+leader 0 0 apply index: 12 and nonw comm 12 term 2
+term 2 F 1 know leader is 0
+leader 0 1 apply index: 1 and nonw comm 12 term 2
+leader 0 1 apply index: 2 and nonw comm 12 term 2
+leader 0 1 apply index: 3 and nonw comm 12 term 2
+leader 0 1 apply index: 4 and nonw comm 12 term 2
+leader 0 1 apply index: 5 and nonw comm 12 term 2
+leader 0 1 apply index: 6 and nonw comm 12 term 2
+leader 0 1 apply index: 7 and nonw comm 12 term 2
+leader 0 1 apply index: 8 and nonw comm 12 term 2
+leader 0 1 apply index: 9 and nonw comm 12 term 2
+leader 0 1 apply index: 10 and nonw comm 12 term 2
+leader 0 1 apply index: 11 and nonw comm 12 term 2
+0 find live [2 1 0]
+0 find live [2 1 0]
+term 2 F 2 know leader is 0
+leader 0 2 apply index: 1 and nonw comm 12 term 2
+leader 0 2 apply index: 2 and nonw comm 12 term 2
+leader 0 2 apply index: 3 and nonw comm 12 term 2
+leader 0 2 apply index: 4 and nonw comm 12 term 2
+leader 0 2 apply index: 5 and nonw comm 12 term 2
+leader 0 2 apply index: 6 and nonw comm 12 term 2
+leader 0 2 apply index: 7 and nonw comm 12 term 2
+leader 0 2 apply index: 8 and nonw comm 12 term 2
+leader 0 2 apply index: 9 and nonw comm 12 term 2
+leader 0 2 apply index: 10 and nonw comm 12 term 2
+leader 0 2 apply index: 11 and nonw comm 12 term 2
+0 find live [2 1 0]
+0 find live [2 1 0]
+0 find live [2 1 0]
+--- FAIL: TestCount2B (1.69s)
+    test_test.go:562: too many RPCs (63) for 10 entries
+FAIL
+exit status 1
+FAIL	6.824/raft	50.383s
