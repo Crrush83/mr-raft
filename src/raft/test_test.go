@@ -174,7 +174,7 @@ func TestRPCBytes2B(t *testing.T) {
 	if got > expected+50000 {
 		t.Fatalf("too many RPC bytes; got %v, expected %v", got, expected)
 	}
-
+  
 	cfg.end()
 }
 
