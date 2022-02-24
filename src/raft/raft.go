@@ -275,17 +275,17 @@ func (rf *Raft) atomicSetLeaderSetState(leader int,state int)bool{
 		}
 		//leader - 1 -> -1 不会发生 因为那样状态会变Candidate
 	}else if(rf.state == STATELEADER && state == STATEFOLLOWER){
-	//	fmt.Println("L -> F  follow ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
+		fmt.Println("L -> F  follow ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
 		clear = true
 	}else if(rf.state == STATEFOLLOWER && state == STATECANDIDATE){
 		//只有投给自己成功了才自增term 
 		//不然有没有可能在投给他人成功（candidate状态）后再次自增term 导致无法接受HB
 		//Commit突然变？
 	//	fmt.Println("F->C commit",rf.commitIndex)
-//	fmt.Println("F -> C  candi   ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
+	fmt.Println("F -> C  candi   ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
 		clear = true
 	}else if(rf.state == STATECANDIDATE && state == STATEFOLLOWER){
-//		fmt.Println("C -> F  follow ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
+		fmt.Println("C -> F  follow ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
 		//如果leader是-1则保留投票状态
 		//leader确定后则应该清空
 		//如果是投给自己没有得到回应应该清空状态
@@ -314,7 +314,7 @@ func (rf *Raft) atomicSetLeaderSetState(leader int,state int)bool{
 		//rf.clearStaleEntry()
 		//从保存点恢复 暂时为0
 		//不要一口气发送太多丫 先试探commit 需要一个定制的？？
-	//	fmt.Println("C -> L  leader ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
+		fmt.Println("C -> L  leader ",rf.me,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
 		rf.matchIndex = make([]int,len(rf.peers))
 		rf.nextIndex = make([]int,len(rf.peers))
 		rf.matchIndex[rf.me] = rf.atomicGetLastEntry().Index
@@ -370,8 +370,8 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	//反证法！多数已收到只是没有更新commit 获胜follower其log大于剩余至少1/2
 	//故该最大log大于等于commit
 	//优先级：Term必须符合 LastLogTerm必须>= LastLogIndex是辅助项（快速选出）更新的term无需满足Index
-	if(args.Term >= rf.term && ((args.LastLogTerm >= rf.atomicGetLastEntry().Term && args.LastLogIndex >= rf.atomicGetLastEntry().Index) ||
-	args.LastLogTerm > rf.atomicGetLastEntry().Term)){
+	if(args.Term >= rf.term && args.LastLogTerm >= rf.atomicGetLastEntry().Term && args.LastLogIndex >= rf.atomicGetLastEntry().Index){
+	//args.LastLogTerm > rf.atomicGetLastEntry().Term)){
 		if(rf.atomicVoteFor(args.CandidateId)){
 			reply.VoteGranted = true
 			//LEADER和FOLLOWER和投给自己的CANDIDATE、未投票的CANDIATE收到
@@ -655,25 +655,19 @@ func (rf *Raft) sendToPeersOnce(timeout int){
 	reply := make([]AppendEntryReply,len(rf.peers))
 	
 	for server,_ := range rf.peers{
-		// if(rf.state!=STATELEADER) {
-		// 	//leader一进入就退出why?只是有一个断了而已啊
-		// 	return}
-		//从哪条log开始封包？
 		i := rf.nextIndex[server]
-
-		//这一段会影响什么啊？为什么加上会导致leader退出 ？而且不是运行完拒绝条件再退出
-		//不发没心跳啊？
-
 		if(rf.nextIndex[server] - rf.matchIndex[server] > 1){
 			goto emptysend
 		}
+		rf.entry_lock.Lock()
 		args[server].PrevLogIndex = rf.entries[rf.matchIndex[server]].Index
 		args[server].PrevLogTerm = rf.entries[rf.matchIndex[server]].Term
-		for i <= last{
+		for i <= last && i < len(rf.entries){
+			//刚准备commit 但是有没有被新leader覆盖捏。。
 			args[server].Entries = append(args[server].Entries,rf.entries[i])
 			i++
 		}
-		
+		rf.entry_lock.Unlock()
 		emptysend:
 		reply[server].Term = -1
 		reply[server].Success = false
@@ -701,8 +695,10 @@ func (rf *Raft) sendToPeersOnce(timeout int){
 	livenum := len(live)
 
 	if(succnum > (len(rf.peers)/2)){
-//	fmt.Println("send",last,"die ",len(rf.peers) - livenum,"sucess",succnum)	
+		//保证现在commit的不会被覆盖掉
+				if(last < len(rf.entries) && rf.entries[last].Term >= rf.term){
 				rf.commitIndex = last
+				}
 	}else{
 	//	fmt.Println("ack太少")
 	}
@@ -775,6 +771,15 @@ func (rf *Raft) apply(initstate int){
 	for ( applyindex > 0 && applyindex < len(rf.entries)&& 
 	//rf.entries[applyindex].Index <= rf.commitIndex && rf.entries[applyindex].Term == rf.term){
 	rf.entries[applyindex].Index <= rf.commitIndex ){
+		//Figure8说了什么？
+		//term2:leader1 :2[2] 未同步到多数 未commit
+		//term3:leader5 :2[3]
+		//term4:leader1 将其2[2]同步到多数 自己commit但未告知多数
+		//term5:为了保证被提交的2[2] 不可以让为拥有2[2]的当选
+		//但worker5再次当选leader[因为最新log 较大term优先原则！]
+		//但实际上2[2]是在term4被commit的！那么怪异的2[2]就这样被覆盖
+		//不要commit旧term的！因为如果这个时候挂了 旧term的log可能会被覆盖 除非又有本term的log来到
+		//证明本轮的多数已经拥有“最大的term” 以保全commit以往是安全的
 		apl := ApplyMsg{}
 		apl.CommandValid = true
 		apl.CommandIndex = rf.entries[applyindex].Index
