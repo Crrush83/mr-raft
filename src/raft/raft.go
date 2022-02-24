@@ -843,7 +843,7 @@ func (rf *Raft) ticker() {
 			rf.apply(STATEFOLLOWER)
 			rand.Seed(time.Now().UnixNano())
 			randTime := rand.Intn(150)
-			time.Sleep(time.Duration(150000000+randTime*1000000)) 
+			time.Sleep(time.Duration(100000000+randTime*1000000)) 
 			//candidatetimeout + heartbeat时间如果 > 两个followersleep只差
 			//则明明已经有了leader却没有发现
 				if rf.atomicGetLeader() >= 0 {
@@ -907,7 +907,7 @@ func (rf *Raft) ticker() {
 					continue
 				}
 		}else if rf.state == STATELEADER{
-			rf.sendToPeersOnce(150000000)
+			rf.sendToPeersOnce(50000000)
 			rf.apply(STATELEADER)
 		//	fmt.Println("leader ",rf.leader,"latest",rf.entries[len(rf.entries)-1].Index,"[",rf.entries[len(rf.entries)-1].Term,"]","commit",rf.commitIndex)	
 			
